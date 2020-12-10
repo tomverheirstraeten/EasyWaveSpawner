@@ -2,6 +2,8 @@
 
 
 
-export UuidHelper{
+export const UuidHelper = {
 
-}
+};
+
+
