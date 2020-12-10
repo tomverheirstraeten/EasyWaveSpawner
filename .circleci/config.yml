@@ -3,8 +3,8 @@ orbs:
   node: circleci/node@3.0.0
 
 jobs:
-  build:
-    docker:
+  build: 
+    docker: 
       - image: circleci/node:12.18
     steps:
       - checkout
@@ -12,13 +12,14 @@ jobs:
       - run: cd api && npm ci
       - run: cd api && npm test
 
-      -setup_remote_docker
 
-       - run:
+      - setup_remote_docker
+      
+      - run: |
           cd api
           TAG="0.1.${CIRCLE_BUILD_NUM}"
-          docker build -t tomverheirstraeten/EasyWaveSpawner:$TAG .
+          docker build -t tomverheirstraeten/easywavespawner:$TAG .
           docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-          docker push tomverheirstraeten/EasyWaveSpawner:$TAG
+          docker push tomverheirstraeten/easywavespawner:$TAG
 
 

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "jest --watchAll --verbose --detectOpenHandles"
+    "test": "jest --verbose --passWithNoTests",
+    "testAll": "jest --watchAll --verbose --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
