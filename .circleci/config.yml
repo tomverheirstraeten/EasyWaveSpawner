@@ -12,7 +12,7 @@ jobs:
       - run: cd api && npm ci
       - run: cd api && npm test
 
-      -setup_remote_docker
+      - setup_remote_docker
 
        - run:
           cd api
