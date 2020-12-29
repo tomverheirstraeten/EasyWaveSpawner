@@ -1,9 +1,17 @@
 
+const { v4: uuidv4 } = require('uuid');
 
 
 
-export const UuidHelper = {
+const UUIDHelper = {
 
+    generateUUID: () => {
+
+        return uuidv4();
+    }
 };
+
+
+module.exports = UUIDHelper;
 
 
