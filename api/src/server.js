@@ -11,7 +11,7 @@ const pg = require("knex")({
     client: 'pg',
     version: '9.6',
     searchPath: ['knex', 'public'],
-    connection: process.env.PG_CONNECTION_STRING ? process.env.PG_CONNECTION_STRING : 'postgres://example:example@container:5432/EasyWaveSpawnerDB'
+    connection: process.env.PG_CONNECTION_STRING ? process.env.PG_CONNECTION_STRING : 'postgres://example:example@127.0.0.1:5432/easywavespawnerdb'
 });
 
 
@@ -29,11 +29,11 @@ app.use(
 );
 
 
-
+///HOMEPAGE///
 app.get('/', (req, res) => {
-    res.send(200);
+    res.sendStatus(200);
 })
-
+///GET ALL WAVES///
 app.get('/getAllWaves', async (req, res) => {
     try {
         const result = await pg.select(["uuid", "game_uuid", "enemy_amount", "difficulty", "time_between_enemies"]).from("waves");
@@ -46,21 +46,26 @@ app.get('/getAllWaves', async (req, res) => {
     }
 
 })
-
+///GET ALL WAVES FROM SPECIFIC GAME///
 app.get('/getWavesFromGame/:title', async (req, res) => {
 
     try {
         const result = await pg
-            .select(["waves.id", "games.title", "waves.uuid", "waves.enemy_amount", "waves.difficulty", "waves.time_between_enemies"])
+            .select(["waves.id", "waves.uuid", "waves.enemy_amount", "waves.difficulty", "waves.time_between_enemies"])
             .from("games")
             .rightJoin('waves', 'waves.game_id', 'games.id').where({ title: req.params.title });
-        res.json({
-            waves: result
-        })
+        if (result.length == 0) {
+            res.sendStatus(204);
+        } else {
+            res.json({
+                waves: result
+            })
+        }
     } catch (error) {
         console.log(error);
     }
 })
+///GET ALL WAVES BY DIFFICULTY///
 app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
     try {
         const result = await pg
@@ -75,7 +80,7 @@ app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
 })
 
 
-
+///INITIALISETABLES IF THEY DON'T EXIST///
 async function initialiseTables() {
 
     await pg.schema.hasTable('games').then(async (exists) => {

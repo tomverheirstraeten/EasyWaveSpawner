@@ -5,7 +5,7 @@ services:
     container_name: api
     build: ./api
     environment:
-      PG_CONNECTION_STRING: postgres://example:example@container:5432/EasyWaveSpawnerDB
+      PG_CONNECTION_STRING: postgres://example:example@container:5432/easywavespawnerdb
 
     ports:
       - 3000:3000
@@ -20,7 +20,7 @@ services:
     environment:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: example
-      POSTGRES_DB: EasyWaveSpawnerDB
+      POSTGRES_DB: easywavespawnerdb
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - 5432:5432
