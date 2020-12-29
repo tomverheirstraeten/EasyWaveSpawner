@@ -7,7 +7,7 @@ describe("server test", () => {
 
         try {
             const response = await request.get('/')
-            expect(response.status).toBe(200)
+            expect(response.status).toBe(200, done())
         } catch (e) {
             if (e) {
                 console.log(e);
