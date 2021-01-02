@@ -33,10 +33,24 @@ app.use(
 app.get('/', (req, res) => {
     res.sendStatus(200);
 })
+/////READ/////
 ///GET ALL WAVES///
 app.get('/getAllWaves', async (req, res) => {
     try {
         const result = await pg.select(["uuid", "game_uuid", "enemy_amount", "difficulty", "time_between_enemies"]).from("waves");
+
+        res.json({
+            res: result,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
+})
+///GET ALL GAMES///
+app.get('/getAllGames', async (req, res) => {
+    try {
+        const result = await pg.from("games");
 
         res.json({
             res: result,
@@ -78,7 +92,8 @@ app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
         console.log(error);
     }
 })
-
+/////DELETE/////
+///DELETE WAVE BY ID///
 app.delete('/deleteWaveByid/:id', async (rec, res) => {
     try {
         const result = await pg
@@ -92,8 +107,16 @@ app.delete('/deleteWaveByid/:id', async (rec, res) => {
         console.log(error);
     }
 })
-
-
+///DELETE ENTIRE GAME///
+app.delete('/deleteGame/:id', async (req, res) => { })
+/////UPDATE/////
+///ADJUST WAVE DIFFICULTY///
+app.patch('/changeWaveDifficulty', async (req, res) => { })
+/////CREATE/////
+///CREATE NEW GAME///
+app.post('createGame', async (req, res) => { })
+///CREATE NEW WAVE///
+app.post('createWave', async (req, res) => { })
 ///INITIALISETABLES IF THEY DON'T EXIST///
 async function initialiseTables() {
 
