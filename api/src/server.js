@@ -79,6 +79,20 @@ app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
     }
 })
 
+app.delete('/deleteWaveByid/:id', async (rec, res) => {
+    try {
+        const result = await pg
+            .from("waves")
+            .where({ uuid: req.params.id })
+            .del()
+        res.json({
+            waves: result
+        })
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 
 ///INITIALISETABLES IF THEY DON'T EXIST///
 async function initialiseTables() {

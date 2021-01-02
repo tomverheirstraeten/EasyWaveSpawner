@@ -25,33 +25,7 @@ describe("server test2", () => {
         }
     })
 })
-// // describe("getWavesFromGame/:title", () => {
-// //     test("if title exists", async (done) => {
-// //         try {
-// //             const response = await request.get('/getWavesFromGame/GAMETHATDOESNTEXIST');
-// //             expect(response.status).toBe(204);
-// //             done()
-// //         } catch (e) {
-// //             console.log(e);
 
-
-// //         }
-
-// //     })
-
-// //     // test("can only enter string", () => {
-
-// //     //     try {
-// //     //         const response = await request.get('/getWavesFromGame/4')
-// //     //         expect(response.status).toBe(404, done())
-// //     //     } catch (e) {
-// //     //         if (e) {
-// //     //             console.log(e);
-// //     //         }
-// //     //     }
-
-// //     // })
-// // })
 // //commit test
 describe('getWavesFromGame/:title', () => {
     test('check if response is created', async (done) => {
@@ -62,5 +36,19 @@ describe('getWavesFromGame/:title', () => {
         } catch (error) {
             console.log(error);
         }
+    })
+    test("gives back empty when game doesnt exist", async () => {
+
+        try {
+            const response = await request.get('/getWavesFromGame/game88')
+            expect(response.status).toBe(404);
+
+        } catch (e) {
+            if (e) {
+                console.log(e);
+            }
+        }
+
+
     })
 })
