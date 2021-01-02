@@ -41,11 +41,11 @@ app.get('/getAllWaves', async (req, res) => {
     try {
         const result = await pg.select(["uuid", "game_id", "enemy_amount", "difficulty", "time_between_enemies"]).from("waves");
 
-        res.json({
-            res: result,
-        });
+        res.json(
+            result
+        );
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 
 })
@@ -58,7 +58,7 @@ app.get('/getAllGames', async (req, res) => {
             res: result,
         });
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 
 })
@@ -78,7 +78,7 @@ app.get('/getWavesFromGame/:title', async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 })
 ///GET ALL WAVES BY DIFFICULTY///
@@ -86,16 +86,18 @@ app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
     let stringToCheck = req.params.difficulty.toLowerCase();
     if (stringToCheck !== "easy" && stringToCheck !== "medium" && stringToCheck !== "hard" && stringToCheck !== "extreme") {
         res.send(false)
-    }
-    try {
-        const result = await pg
-            .from("waves")
-            .where({ difficulty: stringToCheck })
-        res.json({
-            waves: result
-        })
-    } catch (error) {
-        console.log(error);
+    } else {
+
+        try {
+            const result = await pg
+                .from("waves")
+                .where({ difficulty: stringToCheck })
+            res.json({
+                waves: result
+            })
+        } catch (error) {
+            res.send(error)
+        }
     }
 })
 /////DELETE/////
@@ -120,7 +122,7 @@ app.delete('/deleteWaveByid/:id', async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 })
 ///DELETE ENTIRE GAME///
@@ -144,7 +146,7 @@ app.delete('/deleteGame/:id', async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 })
 /////UPDATE/////
@@ -161,7 +163,7 @@ app.patch('/changeWaveDifficulty/:id', async (req, res) => {
                     difficulty: req.body.diff
                 }).then(() => {
                     console.log(`updated ${req.params.id} from waves`);
-                    res.send(`updated ${req.params.id} from waves`);
+                    res.send(204);
                 }).catch((e) => {
                     console.log(e);
                 })
@@ -171,7 +173,7 @@ app.patch('/changeWaveDifficulty/:id', async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 })
 /////CREATE/////
@@ -185,11 +187,21 @@ app.post('/createGame', async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
+        res.send(error)
     }
 })
 ///CREATE NEW WAVE///
-app.post('/createWave', async (req, res) => { })
+app.post('/createWave/:gameTitle', async (req, res) => {
+    try {
+        const uuid = uuidHelper.generateUUID();
+        await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
+            res.send(`created ${uuid} with name ${req.body.title}`)
+        })
+
+    } catch (error) {
+        res.send(error)
+    }
+})
 ///INITIALISETABLES IF THEY DON'T EXIST///
 async function initialiseTables() {
 

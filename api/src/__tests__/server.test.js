@@ -40,15 +40,15 @@ describe('getWavesFromGame/:title', () => {
             expect(response.status).toBe(200);
             done()
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     })
-    test("gives back not found when game doesnt exist", async () => {
+    test("gives back not found when game doesnt exist", async (done) => {
 
         try {
             const response = await request.get('/getWavesFromGame/game88')
             expect(response.status).toBe(404);
-
+            done()
         } catch (e) {
             if (e) {
                 console.log(e);
@@ -68,7 +68,7 @@ describe('getAllWaves', () => {
             done()
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     })
 
@@ -77,7 +77,7 @@ describe('getAllWaves', () => {
 ///GET ALL WAVES BY DIFFICULTY///
 describe('getWavesByDifficulty', () => {
 
-    test('If I get waves back', async (done) => {
+    test('If I get waves back', async done => {
         try {
             const response = await request.get('/getWavesByDifficulty/hard')
             expect(response.status).toBe(200);
@@ -86,16 +86,17 @@ describe('getWavesByDifficulty', () => {
             console.log(error);
         }
     })
-    test('if difficulty is hard,medium,easy or extreme', async () => {
+    test('if difficulty is hard,medium,easy or extreme', async done => {
         try {
             const response = await request.get('/getWavesByDifficulty/somethingelsethanallowed')
-            expect(response).toBeFalsy();
 
+            expect(response.body).toBeFalsy;
+            done()
         } catch (error) {
             console.log(error);
         }
     })
-    test('caps or no capps dont matter', async (done) => {
+    test('caps or no caps dont matter', async done => {
         try {
             const response = await request.get('/getWavesByDifficulty/HaRd')
             expect(response.status).toBe(200);
@@ -108,27 +109,59 @@ describe('getWavesByDifficulty', () => {
 
 })
 ///DELETE ENTIRE GAME///
-describe('deleteGame', () => {
+// describe('deleteGame', () => {
 
-    // test('if game is deleted', async (done) => {
-    //     try {
-    //         ///delete id of game3
-    //         const response = await request.delete('/deleteGame/:id')
-    //         .then(await request.get('/getWavesFromGame/Game3'))
-    //         done()
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // })
-    // test('if waves get deleted with game', async (done) => {
-    //     try {
-    //         const response = await request.delete('/deleteGame/:id')
-    //         expect(response.status).toBe(200);
-    //         done()
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // })
+//     test('if game is deleted', async (done) => {
+//         try {
+//             ///delete id of game3
+//             const response = await request.delete('/deleteGame/:id')
+//             .then(await request.get('/getWavesFromGame/Game3'))
+//             done()
+//         } catch (error) {
+//             console.log(error);
+//         }
+//     })
+//     test('if waves get deleted with game', async (done) => {
+//         try {
+//             const response = await request.delete('/deleteGame/:id')
+//             expect(response.status).toBe(200);
+//             done()
+//         } catch (error) {
+//             console.log(error);
+//         }
+//     })
+
+
+// })
+///update wave difficulty
+describe('updatedifficulty', () => {
+    let id;
+    const data = {
+        "diff": "easy"
+    }
+
+    test('if wavedifficulty is updated', async (done) => {
+        try {
+            const waves = await request.get("/getAllWaves")
+            try {
+                for (const wave of waves.body) {
+                    id = wave.uuid
+                }
+                const response = await request.patch(`/changeWaveDifficulty/${id}`).send(data)
+                expect(response.status).toBe(204);
+                done()
+            } catch (error) {
+                console.log(error)
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    })
+
+
 
 
 })
