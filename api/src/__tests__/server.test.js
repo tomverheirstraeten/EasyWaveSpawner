@@ -63,8 +63,10 @@ describe('getAllWaves', () => {
     test('If I get waves back', async (done) => {
         try {
             const response = await request.get('/getAllWaves')
+            console.log(response);
             expect(response.status).toBe(200);
             done()
+
         } catch (error) {
             console.log(error);
         }
@@ -84,18 +86,18 @@ describe('getWavesByDifficulty', () => {
             console.log(error);
         }
     })
-    test('if difficulty is hard,medium,easy or extreme', async (done) => {
+    test('if difficulty is hard,medium,easy or extreme', async () => {
         try {
             const response = await request.get('/getWavesByDifficulty/somethingelsethanallowed')
             expect(response).toBeFalsy();
-            done()
+
         } catch (error) {
             console.log(error);
         }
     })
     test('caps or no capps dont matter', async (done) => {
         try {
-            const response = await request.get('/getWavesByDifficulty/Hard')
+            const response = await request.get('/getWavesByDifficulty/HaRd')
             expect(response.status).toBe(200);
             done()
         } catch (error) {
