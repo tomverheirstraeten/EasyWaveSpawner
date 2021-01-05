@@ -134,20 +134,68 @@ describe('getWavesByDifficulty', () => {
 
 // })
 ///update wave difficulty
-describe('updatedifficulty', () => {
+describe('updateWaves', () => {
     let id;
-    const data = {
-        "diff": "easy"
-    }
+
 
     test('if wavedifficulty is updated', async (done) => {
+        let data = {
+            "difficulty": "easy",
+            "enemy_amount": 0
+        }
         try {
             const waves = await request.get("/getAllWaves")
             try {
                 for (const wave of waves.body) {
                     id = wave.uuid
                 }
-                const response = await request.patch(`/changeWaveDifficulty/${id}`).send(data)
+                const response = await request.patch(`/changeWave/${id}`).send(data)
+                expect(response.status).toBe(204);
+                done()
+            } catch (error) {
+                console.log(error)
+            }
+
+
+            done()
+        } catch (error) {
+            console.log(error);
+        }
+    })
+    test('if new difficulty is "hard","easy",extreme" or medium', async (done) => {
+        let data = {
+            "difficulty": "55"
+        }
+        try {
+            const waves = await request.get("/getAllWaves")
+            try {
+                for (const wave of waves.body) {
+                    id = wave.uuid
+                }
+                const response = await request.patch(`/changeWave/${id}`).send(data)
+                expect(response.body).toBeFalsy;
+                done()
+            } catch (error) {
+                console.log(error)
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    })
+    test('caps or no caps dont matter', async (done) => {
+        let data = {
+            "difficulty": "HaRd"
+        }
+        try {
+            const waves = await request.get("/getAllWaves")
+            try {
+                for (const wave of waves.body) {
+                    id = wave.uuid
+                }
+                const response = await request.patch(`/changeWave/${id}`).send(data)
                 expect(response.status).toBe(204);
                 done()
             } catch (error) {
@@ -160,8 +208,46 @@ describe('updatedifficulty', () => {
             console.log(error);
         }
     })
+})
+
+describe('create waves/games', () => {
+
+
+
+    test('if game is created', async (done) => {
+        let data = {
+            "title": "fallguys",
+            "summary": "platformer where people fight to be the last man standing"
+        }
+
+        try {
+            const response = await request.post(`/createGame`).send(data)
+            expect(response.status).toBe(201);
+            done()
+        } catch (error) {
+            console.log(error)
+        }
 
 
 
 
+    })
+    test('if game already exists', async (done) => {
+        let data = {
+            "title": "fallguys",
+            "summary": "platformer where people fight to be the last man standing"
+        }
+
+        try {
+            const response = await request.post(`/createGame`).send(data)
+            expect(response.status).toBe(500);
+            done()
+        } catch (error) {
+            console.log(error);
+        }
+
+
+
+
+    })
 })

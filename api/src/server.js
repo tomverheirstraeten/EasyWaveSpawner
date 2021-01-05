@@ -151,50 +151,95 @@ app.delete('/deleteGame/:id', async (req, res) => {
 })
 /////UPDATE/////
 ///ADJUST WAVE DIFFICULTY///
-app.patch('/changeWaveDifficulty/:id', async (req, res) => {
-    try {
-        const result = await pg.from("waves").where({ uuid: req.params.id })
-        if (result.length !== 0) {
-            console.log(req.body.diff)
-            await pg
-                .table("waves")
-                .where({ uuid: req.params.id })
-                .update({
-                    difficulty: req.body.diff
-                }).then(() => {
-                    console.log(`updated ${req.params.id} from waves`);
-                    res.send(204);
-                }).catch((e) => {
-                    console.log(e);
-                })
+app.patch('/changeWave/:id', async (req, res) => {
+    let canpass = true;
+    if (req.body.hasOwnProperty("difficulty")) {
+        let newdifficulty = req.body.difficulty.toLowerCase();
+        if (newdifficulty !== "easy" && newdifficulty !== "medium" && newdifficulty !== "hard" && newdifficulty !== "extreme") {
+            canpass = false
+
         } else {
-            res.send("wave doesn't exist");
+            req.body.difficulty = newdifficulty
         }
 
+    }
+    if (req.body.hasOwnProperty("enemy_amount")) {
+        let newEnemyAmount = req.body.enemy_amount
+        if (typeof newEnemyAmount !== "number") {
+            canpass = false
+        }
+    }
+    if (req.body.hasOwnProperty("time_between_enemies")) {
+        let newTime = req.body.time_between_enemies
+        if (typeof newTime !== "number") {
+            canpass = false
+        }
 
-    } catch (error) {
-        res.send(error)
+    }
+
+    if (canpass === false) {
+        res.send(canpass);
+    } else {
+
+        try {
+            const result = await pg.from("waves").where({ uuid: req.params.id })
+            if (result.length !== 0) {
+                await pg
+                    .table("waves")
+                    .where({ uuid: req.params.id })
+                    .update(req.body).then(() => {
+                        res.send(204);
+                    }).catch((e) => {
+                        console.log(e);
+                    })
+            } else {
+                res.send("wave doesn't exist");
+            }
+
+
+        } catch (error) {
+            res.send(error)
+        }
     }
 })
 /////CREATE/////
 ///CREATE NEW GAME///
 app.post('/createGame', async (req, res) => {
-
+    //no caps
+    req.body.title = req.body.title.toLowerCase();
+    //check if already exist
     try {
-        const uuid = uuidHelper.generateUUID();
-        await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
-            res.send(`created ${uuid} with name ${req.body.title}`)
-        })
+        const result = await pg.from("games").where({ title: req.body.title });
+        console.log(result.length);
+        if (result.length === 0) {
 
+            try {
+                const uuid = uuidHelper.generateUUID();
+                await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
+
+                    res.status(201).send();
+                })
+
+            } catch (error) {
+                res.send(error)
+            }
+        } else {
+
+            res.status(500).send();
+        }
     } catch (error) {
-        res.send(error)
+        res.send(error);
     }
 })
 ///CREATE NEW WAVE///
 app.post('/createWave/:gameTitle', async (req, res) => {
+    //no caps in difficulty
+    req.body.difficulty = req.body.difficulty.toLowerCase();
+    //if game exist => make wave with id of game
+    //else res.send(false,game doesnt exist)
     try {
         const uuid = uuidHelper.generateUUID();
-        await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
+        await pg.table("waves").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
             res.send(`created ${uuid} with name ${req.body.title}`)
         })
 
