@@ -225,7 +225,7 @@ describe('create waves/games', () => {
             console.log(error)
         }
     })
-    test('if game has title created', async (done) => {
+    test('if game has title', async (done) => {
         let data = {
             "title": "",
             "summary": "summary of the game"
@@ -253,24 +253,38 @@ describe('create waves/games', () => {
             console.log(error);
         }
     })
-    test('if wave already exists', async (done) => {
+    test('if wave is created', async (done) => {
         let data = {
             "enemy_amount": 0,
             "time_between_enemies": 2.3,
-            "difficulty": "hard"
+            "difficulty": "extreme"
         }
 
         try {
-            await request.post(`/createWave/game1`).send(data).then(async () => {
-                const response = await request.post(`/createWave/game1`).send(data)
-                expect(response.status).toBe(500);
-            })
-
+            const response = await request.post(`/createWave/game1`).send(data)
+            expect(response.status).toBe(201);
             done()
         } catch (error) {
             console.log(error);
         }
     })
+    test('if wave exists', async (done) => {
+        let data = {
+            "enemy_amount": 0,
+            "time_between_enemies": 2.3,
+            "difficulty": "extreme"
+        }
+
+        try {
+            const response = await request.post(`/createWave/game1`).send(data)
+            expect(response.status).toBe(500);
+            done()
+        } catch (error) {
+            console.log(error);
+        }
+    })
+
+
     test('if the game for the new wave exists', async (done) => {
         let data = {
             "enemy_amount": 5,
@@ -279,9 +293,10 @@ describe('create waves/games', () => {
         }
 
         try {
-            const response = await request.post(`/createWave/game8`).send(data)
+            const response = await request.post(`/createWave/bestaatNiet`).send(data)
             expect(response.status).toBe(500);
             done()
+
         } catch (error) {
             console.log(error);
         }

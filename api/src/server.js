@@ -207,7 +207,7 @@ app.patch('/changeWave/:id', async (req, res) => {
 app.post('/createGame', async (req, res) => {
     //no caps
     req.body.title = req.body.title.toLowerCase();
-    if (req.body.title === "") {
+    if (req.body.title !== "") {
 
         try {
             const result = await pg.from("games").where({ title: req.body.title });
@@ -232,7 +232,7 @@ app.post('/createGame', async (req, res) => {
             res.send(error);
         }
     } else {
-        res.status(500).send();
+        res.status(500).send("title of game needs to be at least 1 character long");
     }
     //check if already exist
 })
@@ -240,23 +240,46 @@ app.post('/createGame', async (req, res) => {
 app.post('/createWave/:gameTitle', async (req, res) => {
     //no caps in difficulty
     req.body.difficulty = req.body.difficulty.toLowerCase();
+    req.params.gameTitle = req.params.gameTitle.toLowerCase();
+    let gameID;
     //if game exist => make wave with id of game
     try {
+        let result = await pg.select(["id"]).from("games").where({ title: req.params.gameTitle });
 
+
+        console.log(req.params.gameTitle + "//////////" + result.length + "//////////////")
+        if (result.length !== 0) {
+            gameID = result[0].id;
+
+            try {
+                const allwaves = await pg.from("waves").where({ game_id: gameID, difficulty: req.body.difficulty, enemy_amount: req.body.enemy_amount, time_between_enemies: req.body.time_between_enemies });
+                console.log(allwaves.length);
+                if (allwaves.length === 0) {
+                    try {
+                        const uuid = uuidHelper.generateUUID();
+                        await pg.table("waves").insert({ game_id: gameID, uuid, time_between_enemies: req.body.time_between_enemies, enemy_amount: req.body.enemy_amount, difficulty: req.body.difficulty }).then(() => {
+                            res.status(201).send();
+                        })
+
+                    } catch (error) {
+                        res.send(error)
+                    }
+                }
+                else {
+                    res.status(500).send("wave already exist")
+                }
+            } catch (error) {
+
+            }
+        } else {
+            res.status(500).send("game not found");
+        }
     } catch (error) {
 
     }
-    //else res.send(false,game doesnt exist)
-    try {
-        const uuid = uuidHelper.generateUUID();
-        await pg.table("waves").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
-            res.send(`created ${uuid} with name ${req.body.title}`)
-        })
 
-    } catch (error) {
-        res.send(error)
-    }
 })
+
 ///INITIALISETABLES IF THEY DON'T EXIST///
 async function initialiseTables() {
 
