@@ -207,35 +207,45 @@ app.patch('/changeWave/:id', async (req, res) => {
 app.post('/createGame', async (req, res) => {
     //no caps
     req.body.title = req.body.title.toLowerCase();
-    //check if already exist
-    try {
-        const result = await pg.from("games").where({ title: req.body.title });
-        console.log(result.length);
-        if (result.length === 0) {
+    if (req.body.title === "") {
 
-            try {
-                const uuid = uuidHelper.generateUUID();
-                await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
+        try {
+            const result = await pg.from("games").where({ title: req.body.title });
+            console.log(result.length);
+            if (result.length === 0) {
 
-                    res.status(201).send();
-                })
+                try {
+                    const uuid = uuidHelper.generateUUID();
+                    await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
 
-            } catch (error) {
-                res.send(error)
+                        res.status(201).send();
+                    })
+
+                } catch (error) {
+                    res.send(error)
+                }
+            } else {
+
+                res.status(500).send();
             }
-        } else {
-
-            res.status(500).send();
+        } catch (error) {
+            res.send(error);
         }
-    } catch (error) {
-        res.send(error);
+    } else {
+        res.status(500).send();
     }
+    //check if already exist
 })
 ///CREATE NEW WAVE///
 app.post('/createWave/:gameTitle', async (req, res) => {
     //no caps in difficulty
     req.body.difficulty = req.body.difficulty.toLowerCase();
     //if game exist => make wave with id of game
+    try {
+
+    } catch (error) {
+
+    }
     //else res.send(false,game doesnt exist)
     try {
         const uuid = uuidHelper.generateUUID();

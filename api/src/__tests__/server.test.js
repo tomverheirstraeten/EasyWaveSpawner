@@ -211,9 +211,6 @@ describe('updateWaves', () => {
 })
 
 describe('create waves/games', () => {
-
-
-
     test('if game is created', async (done) => {
         let data = {
             "title": "fallguys",
@@ -227,10 +224,20 @@ describe('create waves/games', () => {
         } catch (error) {
             console.log(error)
         }
+    })
+    test('if game has title created', async (done) => {
+        let data = {
+            "title": "",
+            "summary": "summary of the game"
+        }
 
-
-
-
+        try {
+            const response = await request.post(`/createGame`).send(data)
+            expect(response.status).toBe(500);
+            done()
+        } catch (error) {
+            console.log(error)
+        }
     })
     test('if game already exists', async (done) => {
         let data = {
@@ -245,9 +252,51 @@ describe('create waves/games', () => {
         } catch (error) {
             console.log(error);
         }
-
-
-
-
     })
+    test('if wave already exists', async (done) => {
+        let data = {
+            "enemy_amount": 0,
+            "time_between_enemies": 2.3,
+            "difficulty": "hard"
+        }
+
+        try {
+            const response = await request.post(`/createWave/game1`).send(data)
+            expect(response.status).toBe(500);
+            done()
+        } catch (error) {
+            console.log(error);
+        }
+    })
+    test('if the game for the new wave exists', async (done) => {
+        let data = {
+            "enemy_amount": 0,
+            "time_between_enemies": 2.3,
+            "difficulty": "hard"
+        }
+
+        try {
+            const response = await request.post(`/createWave/game8`).send(data)
+            expect(response.status).toBe(500);
+            done()
+        } catch (error) {
+            console.log(error);
+        }
+    })
+    test('if wave already exists', async (done) => {
+        let data = {
+            "enemy_amount": 0,
+            "time_between_enemies": 2.3,
+            "difficulty": "hard"
+        }
+
+        try {
+            const response = await request.post(`/createWave/game1`).send(data)
+            expect(response.status).toBe(500);
+            done()
+        } catch (error) {
+            console.log(error);
+        }
+    })
+
 })
