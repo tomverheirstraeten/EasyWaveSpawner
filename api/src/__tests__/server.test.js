@@ -261,8 +261,11 @@ describe('create waves/games', () => {
         }
 
         try {
-            const response = await request.post(`/createWave/game1`).send(data)
-            expect(response.status).toBe(500);
+            await request.post(`/createWave/game1`).send(data).then(async () => {
+                const response = await request.post(`/createWave/game1`).send(data)
+                expect(response.status).toBe(500);
+            })
+
             done()
         } catch (error) {
             console.log(error);
@@ -270,9 +273,9 @@ describe('create waves/games', () => {
     })
     test('if the game for the new wave exists', async (done) => {
         let data = {
-            "enemy_amount": 0,
-            "time_between_enemies": 2.3,
-            "difficulty": "hard"
+            "enemy_amount": 5,
+            "time_between_enemies": 10.2,
+            "difficulty": "medium"
         }
 
         try {
@@ -283,20 +286,6 @@ describe('create waves/games', () => {
             console.log(error);
         }
     })
-    test('if wave already exists', async (done) => {
-        let data = {
-            "enemy_amount": 0,
-            "time_between_enemies": 2.3,
-            "difficulty": "hard"
-        }
 
-        try {
-            const response = await request.post(`/createWave/game1`).send(data)
-            expect(response.status).toBe(500);
-            done()
-        } catch (error) {
-            console.log(error);
-        }
-    })
 
 })
