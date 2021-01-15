@@ -1,3 +1,15 @@
+# V0.2.0
+
+## Endpoints
+```
+-[post] /creatGame => gives back uuid of created game for usage
+```
+## Tests
+```
+- integration tests added
+- end to end tests added
+```
+
 # V0.1.0
 
 ## Endpoints
@@ -11,4 +23,9 @@
 -[PATCH]   /changeWave/:id => change wave properties with specific id 
 -[POST]    /createGame => create new game with title and name
 -[POST]    /createWave/:gameTitle => create a new wave in existing game
+```
+
+## Tests
+```
+- unit tests for every endpoint
 ```
