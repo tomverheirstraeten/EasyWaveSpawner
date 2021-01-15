@@ -10,8 +10,7 @@
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/src/__tests__/integration"
+      "/node_modules/"
     ]
   },
   "author": "",
