@@ -278,41 +278,74 @@ app.post('/createWave/:gameTitle', async (req, res) => {
     req.body.difficulty = req.body.difficulty.toLowerCase();
     req.params.gameTitle = req.params.gameTitle.toLowerCase();
     let gameID;
-    //if game exist => make wave with id of game
-    try {
-        let result = await pg.select(["id"]).from("games").where({ title: req.params.gameTitle });
+    let canpass;
+    if (req.body.hasOwnProperty("difficulty")) {
+        let newdifficulty = req.body.difficulty.toLowerCase();
+        if (newdifficulty !== "easy" && newdifficulty !== "medium" && newdifficulty !== "hard" && newdifficulty !== "extreme") {
+            canpass = false
 
-
-        console.log(req.params.gameTitle + "//////////" + result.length + "//////////////")
-        if (result.length !== 0) {
-            gameID = result[0].id;
-
-            try {
-                const allwaves = await pg.from("waves").where({ game_id: gameID, difficulty: req.body.difficulty, enemy_amount: req.body.enemy_amount, time_between_enemies: req.body.time_between_enemies });
-                console.log(allwaves.length);
-                if (allwaves.length === 0) {
-                    try {
-                        const uuid = uuidHelper.generateUUID();
-                        await pg.table("waves").insert({ game_id: gameID, uuid, time_between_enemies: req.body.time_between_enemies, enemy_amount: req.body.enemy_amount, difficulty: req.body.difficulty }).then(() => {
-                            res.status(201).send();
-                        })
-
-                    } catch (error) {
-                        res.send(error)
-                    }
-                }
-                else {
-                    res.status(500).send("wave already exist")
-                }
-            } catch (error) {
-
-            }
         } else {
-            res.status(500).send("game not found");
+            req.body.difficulty = newdifficulty
         }
-    } catch (error) {
 
     }
+    if (req.body.hasOwnProperty("enemy_amount")) {
+        let newEnemyAmount = req.body.enemy_amount
+        if (typeof newEnemyAmount !== "number") {
+            canpass = false
+        }
+        if (newEnemyAmount < 0) {
+            canpass = false
+        }
+    }
+    if (req.body.hasOwnProperty("time_between_enemies")) {
+        let newTime = req.body.time_between_enemies
+        if (typeof newTime !== "number") {
+            canpass = false
+        }
+        if (newTime < 0) {
+            canpass = false
+        }
+
+    }
+    if (canpass) {
+
+        //if game exist => make wave with id of game
+        try {
+            let result = await pg.select(["id"]).from("games").where({ title: req.params.gameTitle });
+
+
+            console.log(req.params.gameTitle + "//////////" + result.length + "//////////////")
+            if (result.length !== 0) {
+                gameID = result[0].id;
+
+                try {
+                    const allwaves = await pg.from("waves").where({ game_id: gameID, difficulty: req.body.difficulty, enemy_amount: req.body.enemy_amount, time_between_enemies: req.body.time_between_enemies });
+                    console.log(allwaves.length);
+                    if (allwaves.length === 0) {
+                        try {
+                            const uuid = uuidHelper.generateUUID();
+                            await pg.table("waves").insert({ game_id: gameID, uuid, time_between_enemies: req.body.time_between_enemies, enemy_amount: req.body.enemy_amount, difficulty: req.body.difficulty }).then(() => {
+                                res.status(201).send();
+                            })
+
+                        } catch (error) {
+                            res.send(error)
+                        }
+                    }
+                    else {
+                        res.status(500).send("wave already exist")
+                    }
+                } catch (error) {
+
+                }
+            } else {
+                res.status(500).send("game not found");
+            }
+        } catch (error) {
+
+        }
+    } else { res.status(500).send() }
 
 })
 
