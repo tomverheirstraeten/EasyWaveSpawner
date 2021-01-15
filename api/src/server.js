@@ -402,10 +402,10 @@ async function initialiseTables() {
                         for (let index = 0; index < 10; index++) {
                             const uuid = uuidHelper.generateUUID();
                             await pg.table('waves').insert({
-                                uuid, game_id: result[randomInt(2)].id, enemy_amount: 0, difficulty: "hard", time_between_enemies: 2.5
+                                uuid, game_id: result[Math.floor(Math.random() * 2)].id, enemy_amount: 0, difficulty: "hard", time_between_enemies: 2.5
                             });
-                            process.exit();
                         }
+                        process.exit();
 
                     });
 
