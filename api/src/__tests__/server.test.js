@@ -247,14 +247,14 @@ describe('create waves/games', () => {
         }
     })
     test('if wave is created', async (done) => {
-        let data = {
+        let wavedata = {
             "enemy_amount": 0,
             "time_between_enemies": 2.3,
             "difficulty": "extreme"
         }
 
         try {
-            const response = await request.post(`/createWave/game1`).send(data)
+            const response = await request.post(`/createWave/game1`).send(wavedata)
             expect(response.status).toBe(201);
             done()
         } catch (error) {

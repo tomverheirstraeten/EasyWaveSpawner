@@ -85,9 +85,9 @@ app.get('/getWavesFromGame/:title', async (req, res) => {
         if (result.length == 0) {
             res.sendStatus(404);
         } else {
-            res.json({
-                waves: result
-            })
+            res.json(
+                result
+            )
         }
     } catch (error) {
         res.send(error)
@@ -250,7 +250,7 @@ app.post('/createGame', async (req, res) => {
                     const uuid = uuidHelper.generateUUID();
                     await pg.table("games").insert({ uuid, title: req.body.title, summary: req.body.summary }).then(() => {
 
-                        res.status(201).send();
+                        res.status(201).send({ uuid: uuid });
                     })
 
                 } catch (error) {
@@ -278,11 +278,13 @@ app.post('/createWave/:gameTitle', async (req, res) => {
     req.body.difficulty = req.body.difficulty.toLowerCase();
     req.params.gameTitle = req.params.gameTitle.toLowerCase();
     let gameID;
-    let canpass;
+    let canpass = true;
+    console.log(req.body);
     if (req.body.hasOwnProperty("difficulty")) {
         let newdifficulty = req.body.difficulty.toLowerCase();
         if (newdifficulty !== "easy" && newdifficulty !== "medium" && newdifficulty !== "hard" && newdifficulty !== "extreme") {
             canpass = false
+
 
         } else {
             req.body.difficulty = newdifficulty
@@ -293,29 +295,35 @@ app.post('/createWave/:gameTitle', async (req, res) => {
         let newEnemyAmount = req.body.enemy_amount
         if (typeof newEnemyAmount !== "number") {
             canpass = false
+
         }
         if (newEnemyAmount < 0) {
             canpass = false
+
         }
+
     }
     if (req.body.hasOwnProperty("time_between_enemies")) {
         let newTime = req.body.time_between_enemies
         if (typeof newTime !== "number") {
             canpass = false
+
         }
         if (newTime < 0) {
             canpass = false
+
         }
 
     }
     if (canpass) {
+
 
         //if game exist => make wave with id of game
         try {
             let result = await pg.select(["id"]).from("games").where({ title: req.params.gameTitle });
 
 
-            console.log(req.params.gameTitle + "//////////" + result.length + "//////////////")
+
             if (result.length !== 0) {
                 gameID = result[0].id;
 

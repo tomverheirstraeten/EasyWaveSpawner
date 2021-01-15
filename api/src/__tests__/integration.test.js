@@ -11,10 +11,6 @@ describe('/createWave/:gameTitle', () => {
         "difficulty": "medium"
     }
 
-    //if returns false when game doesnt exist
-    //if returns false when difficulty is other than easy/medium/hard/extreme
-
-
     test('return 500 when game doesnt exist', async (done) => {
         try {
             const response = await request.post(`/createWave/bestaatNiet`).send(data_1)
