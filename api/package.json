@@ -8,6 +8,12 @@
     "testall": "jest --watchAll --verbose --detectOpenHandles ",
     "test": "jest --coverage --detectOpenHandles"
   },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/src/__tests__/integration"
+    ]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
