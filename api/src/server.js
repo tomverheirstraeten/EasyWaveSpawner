@@ -31,12 +31,16 @@ app.use(
 );
 
 
-///HOMEPAGE///
+
 app.get('/', (req, res) => {
     res.sendStatus(200);
 })
-/////READ/////
+
 ///GET ALL WAVES///
+/**
+    * @param none
+    * @returns array of objects
+*/
 app.get('/getAllWaves', async (req, res) => {
     try {
         const result = await pg.select(["uuid", "game_id", "enemy_amount", "difficulty", "time_between_enemies"]).from("waves");
@@ -50,6 +54,10 @@ app.get('/getAllWaves', async (req, res) => {
 
 })
 ///GET ALL GAMES///
+/**
+    * @param none
+    * @returns array of objects
+*/
 app.get('/getAllGames', async (req, res) => {
     try {
         const result = await pg.from("games");
@@ -63,6 +71,10 @@ app.get('/getAllGames', async (req, res) => {
 
 })
 ///GET ALL WAVES FROM SPECIFIC GAME///
+/**
+    * @param title => gametitle
+    * @returns array of objects => empty if no game found
+*/
 app.get('/getWavesFromGame/:title', async (req, res) => {
     let titletocheck = req.params.title.toLowerCase();
     try {
@@ -82,6 +94,10 @@ app.get('/getWavesFromGame/:title', async (req, res) => {
     }
 })
 ///GET ALL WAVES BY DIFFICULTY///
+/**
+    * @param difficulty => easy/medium/hard/extreme
+    * @returns array of objects => empty if no wave found
+*/
 app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
     let stringToCheck = req.params.difficulty.toLowerCase();
     if (stringToCheck !== "easy" && stringToCheck !== "medium" && stringToCheck !== "hard" && stringToCheck !== "extreme") {
@@ -102,6 +118,10 @@ app.get('/getWavesByDifficulty/:difficulty', async (req, res) => {
 })
 /////DELETE/////
 ///DELETE WAVE BY ID///
+/**
+    * @param id => game uuid
+    * @returns if succeeded => id of game | if not succeeded => 404 | if wave doesn't exist =>"wave doesn't exist"
+*/
 app.delete('/deleteWaveByid/:id', async (req, res) => {
     try {
         const result = await pg.from("waves").where({ uuid: req.params.id })
@@ -126,6 +146,10 @@ app.delete('/deleteWaveByid/:id', async (req, res) => {
     }
 })
 ///DELETE ENTIRE GAME///
+/**
+    * @param id => uuid of game
+    * @returns if succeeded => id of game | if not succeeded => 404 | if game doesn't exist =>"game doesn't exist"
+*/
 app.delete('/deleteGame/:id', async (req, res) => {
     try {
         const result = await pg.from("games").where({ uuid: req.params.id })
@@ -151,6 +175,10 @@ app.delete('/deleteGame/:id', async (req, res) => {
 })
 /////UPDATE/////
 ///ADJUST WAVE DIFFICULTY///
+/**
+    * @param id => uuid of wave | body = object with change params {difficulty:string,enemy_amount:number,time_between_enemies:number}
+    * @returns if params are bad => false, succeeded => 204, not found => "wave doesnt exist"
+*/
 app.patch('/changeWave/:id', async (req, res) => {
     let canpass = true;
     if (req.body.hasOwnProperty("difficulty")) {
@@ -204,6 +232,10 @@ app.patch('/changeWave/:id', async (req, res) => {
 })
 /////CREATE/////
 ///CREATE NEW GAME///
+/**
+    * @param body (object) => {title:string,summary:string}
+    * @returns 201 (succeeded), 500 (if game already exists),500 (if game title is "")
+*/
 app.post('/createGame', async (req, res) => {
     //no caps
     req.body.title = req.body.title.toLowerCase();
@@ -237,6 +269,10 @@ app.post('/createGame', async (req, res) => {
     //check if already exist
 })
 ///CREATE NEW WAVE///
+/**
+    * @param gameTitle => name of game | body = object with params {difficulty:string,enemy_amount:number,time_between_enemies:number}
+    * @returns 201 (succeeded), 500 (if wave already exists),500 (if game title is not found)
+*/
 app.post('/createWave/:gameTitle', async (req, res) => {
     //no caps in difficulty
     req.body.difficulty = req.body.difficulty.toLowerCase();
