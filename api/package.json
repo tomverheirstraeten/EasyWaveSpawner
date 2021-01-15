@@ -4,15 +4,30 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server.js",
-    "test": "jest --watchAll --verbose --detectOpenHandles"
+    "start": "node src/index.js",
+    "testall": "jest --watchAll --verbose --detectOpenHandles ",
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "jest": "^26.6.3",
+    "http": "0.0.1-security",
+    "knex": "^0.21.12",
+    "lorem-ipsum": "^2.0.3",
     "nodemon": "^2.0.6",
-    "uuid": "^8.3.2"
+    "pg": "^8.5.0",
+    "supertest": "^6.0.1",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
