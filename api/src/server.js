@@ -404,6 +404,7 @@ async function initialiseTables() {
                             await pg.table('waves').insert({
                                 uuid, game_id: result[randomInt(2)].id, enemy_amount: 0, difficulty: "hard", time_between_enemies: 2.5
                             });
+                            process.exit();
                         }
 
                     });
