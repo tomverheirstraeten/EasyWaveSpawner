@@ -22,6 +22,19 @@ docker-compose up
 ```
 => open localhost:3000
 
+## Endpoints
+-   /getAllWaves => get all the existing waves
+-   /getAllGames => get all existing games
+-   /getWavesFromGame/:title => get all the waves from a given game , params : gametitle
+-   /getwavesbydifficulty/:difficulty => get all the waves with a certain difficulty : params : easy/medium/hard/extreme
+-   /deleteWaveByid/:id => delete a specific wave by id
+-   /deleteGame/:id => delete a game by id with all of its linked waves
+-   /changeWave/:id => change wave properties with specific id 
+-   /createGame => create new game with title and name
+-   /createWave/:gameTitle => create a new wave in existing game
+
+
+
 
 ## License
 [MIT](/LICENSE)
@@ -29,7 +42,5 @@ docker-compose up
 
 
 ## Contributing
-Pull requests are allowed.
-contributing to database need authorisation.
-deletion of items in database not allowed.
+I would like to the contributing.md file in the root of of this repository.
 
